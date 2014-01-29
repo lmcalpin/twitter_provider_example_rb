@@ -1,0 +1,13 @@
+== README
+
+Simple sample OData provider.  
+
+This is a very primitive example that is not at all production ready and I use it only for testing
+a third party OData client.
+
+/tweets <- view tweets
+
+Returns tweets for the authenticated user unless you specify a $filterby clause for the "user" property.
+If you filter on the "user" property, this will return tweets for that user.
+
+

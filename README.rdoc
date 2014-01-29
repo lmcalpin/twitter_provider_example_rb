@@ -2,8 +2,7 @@
 
 Simple sample OData provider.  
 
-This is a very primitive example that is not at all production ready and I use it only for testing
-a third party OData client.
+This is a very primitive example that is not at all production ready so don't get excited.
 
 /tweets <- view tweets
 

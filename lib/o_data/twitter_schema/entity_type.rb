@@ -2,7 +2,7 @@ module OData
   module TwitterSchema
     class EntityType < OData::InMemorySchema::EntityType
       def initialize(schema, client, cls, options = {})
-        super(schema, cls, {})
+        super(schema, cls, options)
         @client = client
         # remove methods that we aren't interested in exposing via OData
         self.properties.delete_if { |x| x.name.end_with?('?') }
@@ -13,12 +13,18 @@ module OData
       
       def find_all(key_values = {}, options = nil)
         filters = OData::Core::Options.filters(options)
-        screen_name_filter = filters.find_filter(:user)
-        unless screen_name_filter.nil?
-          raise FilterTooComplicatedException.new("user filter only supports eq") if screen_name_filter.operator != :eq
-          screen_name = screen_name_filter.value.gsub("'", '')
+        tweets = []
+        user_specified = false
+        unless filters.nil?
+          user_filter = filters.find_filter(:user)
+          user_filter.each do |user| 
+            user_specified = true
+            p user.value
+            tweets << @client.user_timeline(user.value, :count=>20, :include_entities=>true)
+          end
         end
-        @client.user_timeline(:screen_name => screen_name, :count=>35, :include_entities => true)
+        tweets << @client.home_timeline(:count=>100, :include_entities=>true) unless user_specified
+        tweets.flatten
       end
       
       # return a string value for a property
